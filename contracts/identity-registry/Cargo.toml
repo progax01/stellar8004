@@ -1,0 +1,17 @@
+[package]
+name = "identity-registry"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "ERC-8004 Identity Registry for Soroban - SEP-50 NFT based agent identity"
+
+[lib]
+crate-type = ["lib", "cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+

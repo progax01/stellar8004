@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "title": "ERC-8004 Agent Registration (Soroban)",
+  "description": "Agent registration file schema compatible with ERC-8004, adapted for Stellar Soroban",
+  "type": "object",
+  "required": ["type", "name", "registrations"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+      "description": "Schema type identifier for ERC-8004 compatibility"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable agent name",
+      "maxLength": 256
+    },
+    "description": {
+      "type": "string",
+      "description": "Agent description",
+      "maxLength": 4096
+    },
+    "image": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to agent avatar/logo image"
+    },
+    "services": {
+      "type": "array",
+      "description": "Agent service endpoints",
+      "items": {
+        "type": "object",
+        "required": ["name", "endpoint"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": ["web", "MCP", "A2A", "API", "websocket"],
+            "description": "Service type"
+          },
+          "endpoint": {
+            "type": "string",
+            "format": "uri",
+            "description": "Service endpoint URL"
+          },
+          "version": {
+            "type": "string",
+            "description": "Protocol version (e.g., '2025-06-18' for MCP, '0.3.0' for A2A)"
+          }
+        }
+      }
+    },
+    "active": {
+      "type": "boolean",
+      "description": "Whether the agent is currently active",
+      "default": true
+    },
+    "registrations": {
+      "type": "array",
+      "description": "On-chain registrations of this agent",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["agentRegistry", "agentId"],
+        "properties": {
+          "agentRegistry": {
+            "type": "string",
+            "pattern": "^stellar:(pubnet|testnet|futurenet):[A-Z0-9]{56}$",
+            "description": "Soroban agent registry identifier: stellar:{network}:{contract_id}",
+            "examples": [
+              "stellar:pubnet:CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC"
+            ]
+          },
+          "agentId": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Token ID in the identity registry (u64)"
+          }
+        }
+      }
+    },
+    "supportedTrust": {
+      "type": "array",
+      "description": "Trust mechanisms this agent supports",
+      "items": {
+        "type": "string",
+        "enum": ["reputation", "validation", "tee-attestation", "domain-verification"]
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "description": "Agent capabilities/skills",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "examples": [
+    {
+      "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+      "name": "MySorobanAgent",
+      "description": "An AI agent providing financial analysis services on Stellar",
+      "image": "https://example.com/agent-avatar.png",
+      "services": [
+        { "name": "web", "endpoint": "https://agent.example.com/" },
+        { "name": "MCP", "endpoint": "https://mcp.agent.example.com/", "version": "2025-06-18" },
+        { "name": "A2A", "endpoint": "https://agent.example.com/.well-known/agent-card.json", "version": "0.3.0" }
+      ],
+      "active": true,
+      "registrations": [
+        {
+          "agentRegistry": "stellar:pubnet:CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+          "agentId": 42
+        }
+      ],
+      "supportedTrust": ["reputation", "validation"],
+      "capabilities": ["financial-analysis", "market-data", "portfolio-optimization"]
+    }
+  ]
+}
+
