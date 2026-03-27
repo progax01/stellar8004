@@ -1,7 +1,7 @@
 {
   "name": "@agenticocean/defi-agent",
   "version": "0.3.1",
-  "description": "AI-powered DeFi agent toolkit for Stellar — yield optimization, Blend, Soroswap",
+  "description": "AI-powered DeFi agent toolkit for Stellar \u2014 yield optimization, Blend, Soroswap",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,7 +15,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "node init && tsc",
     "lint": "tsc --noEmit",
     "clean": "rm -rf dist"
   },

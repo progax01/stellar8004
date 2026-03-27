@@ -32,6 +32,55 @@ Built on Soroban smart contracts, it enables AI agents to manage DeFi positions,
 
 ---
 
+
+## Black Belt Deliverables
+
+### Exported Excel Sheet
+
+- [Project spreadsheet / exported Excel link](https://docs.google.com/spreadsheets/d/1nGrwW59wm0ZKtY30FPLpcFPHWtQIWJvTDUnFBI0wUY8/edit?usp=sharing)
+
+### Advanced Feature Implemented
+
+**Fee Sponsorship / Gasless Transactions using fee bump**
+
+AgenticOcean implements gasless x402 payments by having the agent prepare and sign the Soroban authorization entry, while the facilitator signs and submits the final transaction as the fee-paying account. This lets the end user avoid holding XLM for protocol fees during paid agent interactions.
+
+**Description**
+- Agent builds a signed `X-PAYMENT` header containing `signedAuthEntry` and `assembledTxXdr`
+- Facilitator deserializes the assembled transaction, signs it as the fee payer, and submits settlement on-chain
+- User vault policy still enforces agent auth, destination policy, and spending limits on `agent_pay()`
+
+**Proof of implementation**
+- Protocol specification: [docs/x402-stellar-spec.md](docs/x402-stellar-spec.md)
+- Header builder implementation: [packages/x402-stellar/src/header-builder.ts](packages/x402-stellar/src/header-builder.ts)
+- Facilitator settlement implementation: [packages/x402-stellar/src/facilitator.ts](packages/x402-stellar/src/facilitator.ts)
+- Backend settlement route: [apps/backend/src/routes/x402.routes.ts](apps/backend/src/routes/x402.routes.ts)
+- Flow diagram with fee-bump settlement: [docs/x402-flow.mermaid](docs/x402-flow.mermaid)
+
+### Security Checklist
+
+- [Security / audit checklist](AUDIT_CHECKLIST.md)
+
+### Community Contribution
+
+- X account: [@AgenticOcean](https://x.com/AgenticOcean)
+
+### Data Indexing
+
+**Approach**
+
+AgenticOcean uses a backend event indexer that polls Soroban RPC for contract events on a 30-second interval, stores a rolling in-memory window of decoded events, and exposes explorer/dashboard APIs for agent discovery, activity feeds, stats, and recent history. For richer activity views, the explorer also reads Horizon operations and decodes them into human-readable transaction history.
+
+**Implementation and endpoints**
+- Indexer service: [apps/backend/src/stellar/event-indexer.ts](apps/backend/src/stellar/event-indexer.ts)
+- Explorer API: [apps/backend/src/routes/explorer.routes.ts](apps/backend/src/routes/explorer.routes.ts)
+- Events API: [apps/backend/src/routes/events.routes.ts](apps/backend/src/routes/events.routes.ts)
+- Live explorer dashboard: [agenticocean.solbinary.com/explorer](https://agenticocean.solbinary.com/explorer)
+- Example endpoints: `GET /api/explorer/agents`, `GET /api/explorer/agents/:id/stats`, `GET /api/explorer/activity`, `GET /api/events`
+
+---
+
+
 ## Architecture
 
 ```
@@ -289,6 +338,3 @@ Full SDK and dashboard docs: **[agenticoceandocs.vercel.app](https://agenticocea
 
 ---
 
-## Built For
-
-**SDF Issue #633 — Stellar Rise Hackathon, February 2026**
